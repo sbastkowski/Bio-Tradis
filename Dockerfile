@@ -3,7 +3,7 @@
 FROM debian:bullseye-slim
 
 # Install the dependancies
-<<<<<<< HEAD
+
 RUN apt-get update -qq && apt-get install -y sudo make wget unzip zlib1g-dev cpanminus gcc bzip2 libncurses5-dev libncursesw5-dev libssl-dev libbz2-dev zlib1g-dev liblzma-dev r-base git curl
 RUN apt-get install -y bwa smalt libcurl4-openssl-dev tabix
 
@@ -16,10 +16,6 @@ RUN make install -C /samtools-1.10
 RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2
 RUN tar xjfv minimap2-2.17_x64-linux.tar.bz2
 
-=======
-RUN apt-get update -qq && apt-get install -y sudo make wget unzip zlib1g-dev cpanminus gcc bzip2 libncurses5-dev libncursesw5-dev libssl-dev r-base git libxml-libxml-perl libgd-gd2-perl bioperl bwa smalt tabix samtools locales
-RUN wget https://github.com/lh3/minimap2/releases/download/v2.17/minimap2-2.17_x64-linux.tar.bz2
-RUN tar xjfv minimap2-2.17_x64-linux.tar.bz2
 
 # Set locales (required for running in Singularity)
 RUN   sed -i -e 's/# \(en_GB\.UTF-8 .*\)/\1/' /etc/locale.gen && \
