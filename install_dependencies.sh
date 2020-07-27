@@ -9,11 +9,13 @@ SMALT_VERSION="0.7.6"
 BWA_VERSION="0.7.17"
 TABIX_VERSION="master"
 SAMTOOLS_VERSION="1.3"
+MINIMAP2_VERSION="1.27"
 
 SMALT_DOWNLOAD_URL="http://downloads.sourceforge.net/project/smalt/smalt-${SMALT_VERSION}-bin.tar.gz"
 BWA_DOWNLOAD_URL="https://sourceforge.net/projects/bio-bwa/files/bwa-${BWA_VERSION}.tar.bz2/download"
 TABIX_DOWNLOAD_URL="https://github.com/samtools/tabix/archive/${TABIX_VERSION}.tar.gz"
 SAMTOOLS_DOWNLOAD_URL="https://github.com/samtools/samtools/releases/download/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2"
+MINIMAP2_DOWNLOAD_URL="https://github.com/lh3/minimap2/releases/download/v{MINIMAP2_VERSION}/minimap2-$(MINIMAP2_VERSION}_x64-linux.tar.bz2"
 
 # Make an install location
 if [ ! -d 'build' ]; then
@@ -39,6 +41,7 @@ download $SMALT_DOWNLOAD_URL "smalt-${SMALT_VERSION}.tgz"
 download $BWA_DOWNLOAD_URL "bwa-${BWA_VERSION}.tbz"
 download $TABIX_DOWNLOAD_URL "tabix-${TABIX_VERSION}.tgz"
 download $SAMTOOLS_DOWNLOAD_URL "samtools-${SAMTOOLS_VERSION}.tbz"
+download $MINIMAP2_DOWNLOAD_URL "minimap2-${MINIMAP2_VERSION}.tbz"
 
 # Update dependencies
 if [ "$TRAVIS" = 'true' ]; then
@@ -70,6 +73,14 @@ cd $bwa_dir
 if [ ! -e "$bwa_dir/bwa" ]; then
   make
 fi
+
+## minimap2
+cd $build_dir
+minimap2_dir=$(pwd)/"minimap2-${MINIMAP2_VERSION}"
+if [ ! -d $minimap2_dir ]; then
+  tar xjfv minimap2-${MINIMAP2_VERSION}.tbz
+fi
+
 
 ## tabix
 cd $build_dir
@@ -113,6 +124,7 @@ update_path ${smalt_dir}
 update_path ${bwa_dir}
 update_path "${tabix_dir}"
 update_path "${samtools_dir}"
+update_path ${minimap2_dir}
 
 cd $start_dir
 

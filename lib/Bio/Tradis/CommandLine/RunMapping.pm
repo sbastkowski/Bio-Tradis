@@ -23,6 +23,8 @@ has 'refname' =>
   ( is => 'rw', isa => 'Str', required => 0, default => 'ref.index' );
 has 'outfile' =>
   ( is => 'rw', isa => 'Str', required => 0, default => 'mapped.sam' );
+has 'minimap2' => ( is => 'rw', isa => 'Bool', required => 0, default => 0);
+has 'minimap2_long' => ( is => 'rw', isa =>'Bool', required => 0, default => 0);
 has 'smalt' => ( is => 'rw', isa => 'Maybe[Int]', required => 0, default => 0 );
 has 'smalt_k' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
 has 'smalt_s' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
@@ -34,7 +36,7 @@ has 'smalt_n' => ( is => 'rw', isa => 'Maybe[Int]', required => 0, default => 1 
 sub BUILD {
     my ($self) = @_;
 
-    my ( $fastqfile, $ref, $refname, $outfile, $smalt, $smalt_k, $smalt_s, $smalt_y, $smalt_r,$smalt_n,  $help );
+    my ( $fastqfile, $ref, $refname, $outfile, $minimap2, $minimap2_long, $smalt, $smalt_k, $smalt_s, $smalt_y, $smalt_r,$smalt_n, $help );
 
     GetOptionsFromArray(
         $self->args,
@@ -42,6 +44,8 @@ sub BUILD {
         'r|reference=s'   => \$ref,
         'rn|refname=s'    => \$refname,
         'o|outfile=s'     => \$outfile,
+        'mm2|minimap2=i'       => \$minimap2,
+        'mm2_l|minimap2_long=i'=> \$minimap2_long,
         's|smalt=i'    => \$smalt,
 	'sk|smalt_k=i'    => \$smalt_k,
 	'ss|smalt_s=i'    => \$smalt_s,
@@ -55,6 +59,8 @@ sub BUILD {
     $self->reference( abs_path($ref) )       if ( defined($ref) );
     $self->refname($refname)                 if ( defined($refname) );
     $self->outfile( abs_path($outfile) )     if ( defined($outfile) );
+    $self->minimap2($minimap2)               if ( defined($minimap2) );
+    $self->minimap2_long($minimap2_long)     if ( defined ($minimap2_long) );
     $self->smalt( $smalt )               if ( defined($smalt) );
     $self->smalt_k( $smalt_k )               if ( defined($smalt_k) );
     $self->smalt_s( $smalt_s )               if ( defined($smalt_s) );
@@ -80,12 +86,15 @@ sub run {
         reference => $self->reference,
         refname   => $self->refname,
         outfile   => $self->outfile,
+        minimap2         => $self->minimap2,
+        minimap2_long    => $self->minimap2_long,
         smalt => $self->smalt,
 	smalt_k   => $self->smalt_k,
 	smalt_s   => $self->smalt_s,
 	smalt_y   => $self->smalt_y,
 	smalt_r   => $self->smalt_r
     );
+  
     $mapping->index_ref;
     $mapping->do_mapping;
 }
@@ -110,6 +119,9 @@ Options:
 -rn       : reference index name (optional. default: ref.index)
 -o        : mapped SAM output name (optional. default: mapped.sam)
 -k        : minimum seed length for BWA mapping (optional)
+-mm2      : use minimap2 rather than BWA (optional)
+-mm2_l    : use long reads only available if minimap2 was selected as aligner (optional, default is short reads)
+--smalt   : use smalt rather than bwa as the mapper
 --smalt   : smalt to be used as aligner (oprional. default: bwa)
 --smalt_k : custom k-mer value for SMALT mapping
 --smalt_s : custom step size for SMALT mapping

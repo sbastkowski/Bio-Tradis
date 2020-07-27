@@ -27,6 +27,8 @@ has 'help'      => ( is => 'rw', isa => 'Bool', required => 0 );
 has 'mapping_score' =>
   ( is => 'rw', isa => 'Int', required => 0, default => 30 );
 has 'min_seed_len' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
+has 'minimap2' => ( is => 'rw', isa => 'Bool', required => 0, default => 0);
+has 'minimap2_long' => ( is => 'rw', isa =>'Bool', required => 0, default => 0);
 has 'smalt' => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'smalt_k' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
 has 'smalt_s' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
@@ -58,8 +60,8 @@ sub BUILD {
     my ($self) = @_;
 
     my (
-        $fastqfile, $tag,     $td,      $mismatch, $ref,$smalt_n, $essentiality, $min_seed_len, $smalt,
-        $map_score, $smalt_k, $smalt_s, $smalt_y, $smalt_r, $help, $verbose,$samtools_exec
+        $fastqfile, $tag,     $td,      $mismatch, $ref, $map_score,  $min_seed_len, $minimap2, $minimap2_long, $smalt, 
+         $smalt_k, $smalt_s, $smalt_y, $smalt_n, $smalt_r, $essentiality, $help, $verbose, $samtools_exec
     );
 
     GetOptionsFromArray(
@@ -71,6 +73,8 @@ sub BUILD {
         'r|reference=s'     => \$ref,
         'm|mapping_score=i' => \$map_score,
         'k|min_seed_len=i'  => \$min_seed_len,
+        'mm2|minimap2'       => \$minimap2,
+        'mm2_l|minimap2_long'=> \$minimap2_long,
         's|smalt'           => \$smalt,
         'sk|smalt_k=i'      => \$smalt_k,
         'ss|smalt_s=i'      => \$smalt_s,
@@ -98,6 +102,8 @@ sub BUILD {
     $self->reference( abs_path($ref) )       if ( defined($ref) );
     $self->mapping_score($map_score)         if ( defined($map_score) );
     $self->min_seed_len($min_seed_len)       if ( defined($min_seed_len) );
+    $self->minimap2($minimap2)               if ( defined($minimap2) );
+    $self->minimap2_long($minimap2_long)     if ( defined ($minimap2_long) );
     $self->smalt($smalt)                     if ( defined($smalt) );
     $self->smalt_k($smalt_k)                 if ( defined($smalt_k) );
     $self->smalt_s($smalt_s)                 if ( defined($smalt_s) );
@@ -159,6 +165,8 @@ sub run {
             output_directory => $self->_output_directory,
             _stats_handle    => $self->_stats_handle,
             min_seed_len     => $self->min_seed_len,
+            minimap2         => $self->minimap2,
+            minimap2_long    => $self->minimap2_long,
             smalt            => $self->smalt,
             smalt_k          => $self->smalt_k,
             smalt_s          => $self->smalt_s,
@@ -267,6 +275,8 @@ Options:
 -mm       : number of mismatches allowed when matching tag (optional. default = 0)
 -m        : mapping quality cutoff score (optional. default = 30)
 -k        : custom k-mer value (min seed length) (optional)
+-mm2      : use minimap2 rather than BWA (optional)
+-mm2_l    : use long reads only available if minimap2 was selected as aligner (optional, default is short reads)
 --smalt   : use smalt rather than bwa as the mapper
 --smalt_k : custom k-mer value for SMALT mapping (optional)
 --smalt_s : custom step size for SMALT mapping (optional)

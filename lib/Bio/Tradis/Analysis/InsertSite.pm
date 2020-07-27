@@ -73,7 +73,7 @@ sub _build__output_file_handles {
     for my $sequence_name ( @{ $self->_sequence_names } ) {
         my $file_sequence_name = $sequence_name;
         $file_sequence_name =~ s/[^\w\d\.]/_/g;
-        my $cmd = "gzip > $out.$file_sequence_name.insert_site_plot.gz";
+        my $cmd = "gzip -k > $out.$file_sequence_name.insert_site_plot.gz";
         open( $output_file_handles{$sequence_name}, '|-', $cmd )
           || Bio::Tradis::Analysis::Exceptions::FailedToCreateOutputFileHandle
           ->throw( error =>

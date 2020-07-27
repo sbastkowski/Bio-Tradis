@@ -63,10 +63,14 @@ sub remove_tags {
     my ($self)  = @_;
     my $tag     = uc( $self->tag );
     my $outfile = $self->outfile;
+    my $l = length($tag);
 
     #set up fastq parser
     my $filename = $self->fastqfile;
     my $pars = Bio::Tradis::Parser::Fastq->new( file => $filename );
+
+    print STDERR "mismatch: ", $self->mismatch;
+    print STDERR "Tag: ", $tag;
 
     # create file handle for output
     open( OUTFILE, ">$outfile" );
@@ -78,6 +82,8 @@ sub remove_tags {
         my $seq_string  = $read[1];
         my $qual_string = $read[2];
 
+        
+
         # remove the tag
         my $rm = 0;
         if ( $self->mismatch == 0 ) {
@@ -88,8 +94,7 @@ sub remove_tags {
             if ( $mm <= $self->mismatch ) { $rm = 1; }
         }
 
-        if ($rm) {
-            my $l = length($tag);
+        if ($rm == 1) {
             $seq_string  = substr( $seq_string,  $l );
             $qual_string = substr( $qual_string, $l );
         }

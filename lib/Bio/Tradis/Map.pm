@@ -73,6 +73,8 @@ has 'refname' =>
 has 'outfile' =>
   ( is => 'rw', isa => 'Str', required => 0, default => 'mapped.sam' );
 has 'min_seed_len' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
+has 'minimap2' => ( is => 'rw', isa => 'Bool', required => 0, default => 0);
+has 'minimap2_long' => ( is => 'rw', isa =>'Bool', required => 0, default => 0);
 has 'smalt' => ( is => 'rw', isa => 'Bool', required => 0, default => 0 );
 has 'smalt_k' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
 has 'smalt_s' => ( is => 'rw', isa => 'Maybe[Int]', required => 0 );
@@ -91,9 +93,12 @@ sub index_ref {
         my $read_len = $self->_calculate_read_len();
         my ( $k, $s ) = $self->_calculate_index_parameters($read_len);
         $cmd = "smalt index -k $k -s $s $refname $ref > /dev/null 2>&1";
+    } elsif ($self->minimap2) {
+        $cmd = "minimap2 -d $refname $ref > /dev/null 2>&1";
     } else {
-        $cmd = "bwa index $ref > /dev/null 2>&1"
+        $cmd = "bwa index $ref > /dev/null 2>&1";
     }
+    print STDERR "..........Step 3.1: Index reference: $cmd\n";
     system($cmd);
     return $cmd;
 }
@@ -151,7 +156,13 @@ sub do_mapping {
     my $align = "";
     if ($self->smalt) { 
         $align = "smalt map -n $n -x -r $r -y $y $refname $fqfile 1> $outfile 2> align.stderr";
-    } else {
+    } elsif ($self->minimap2) {
+        if ($self->minimap2_long) {
+        $align = "minimap2 -o $outfile -N 1 -ax map-ont $ref $fqfile";
+        } else {
+        $align = "minimap2 -o $outfile -N 1 -ax sr $ref $fqfile";
+        }
+    }  else {
         my $read_len = $self->_calculate_read_len();
         my $k = ( defined $self->min_seed_len ) ? 
             $self->min_seed_len : 
@@ -159,7 +170,8 @@ sub do_mapping {
     
         $align = "bwa mem -k $k -t $n $ref $fqfile 1> $outfile 2> align.stderr";
     }
-
+    print STDERR "..........Step 3.2: Align reads: $align\n";
+    
     system($align);
     unlink('align.stderr');
     

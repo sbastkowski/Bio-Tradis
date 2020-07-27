@@ -32,8 +32,8 @@ is($obj->_output_switch, '-b', 'correctly select the bam output switch');
 
 ok( $obj->add_tags_to_seq,  'testing output' );
 ok( -e 't/data/output.bam', 'checking file existence' );
-`$samtools_exec view -h -o t/data/output.sam t/data/output.bam`;
-`$samtools_exec view -h -o t/data/AddTags/expected_tradis.sam t/data/AddTags/expected_tradis.bam`;
+`$samtools_exec view -o t/data/output.sam t/data/output.bam`;
+`$samtools_exec view -o t/data/AddTags/expected_tradis.sam t/data/AddTags/expected_tradis.bam`;
 compare_ok(
     't/data/output.sam',
     't/data/AddTags/expected_tradis.sam',
@@ -51,8 +51,8 @@ ok(
     'creating object'
 );
 ok( -e 't/data/output.bam', 'checking file existence' );
-`$samtools_exec view -h -o t/data/output.sam t/data/output.bam`;
-`$samtools_exec view -h -o t/data/AddTags/sample_sm_no_tr.sam t/data/AddTags/sample_sm_no_tr.bam`;
+`$samtools_exec view -o t/data/output.sam t/data/output.bam`;
+`$samtools_exec view -o t/data/AddTags/sample_sm_no_tr.sam t/data/AddTags/sample_sm_no_tr.bam`;
 
 compare_ok (
     't/data/AddTags/sample_sm_no_tr.sam',
@@ -65,6 +65,7 @@ is(
     $obj->_number_of_lines_in_bam_file('t/data/AddTags/sample_sm_no_tr.bam'),
     'number of reads as expected'
 );
+
 
 my $cramfile = "t/data/AddTags/sample_sm_tr.cram";
 
@@ -81,8 +82,8 @@ is($obj->_output_switch, '-C', 'correctly select the cram output switch');
 
 ok( $obj->add_tags_to_seq,  'testing output' );
 ok( -e 't/data/output.cram', 'checking file existence' );
-`$samtools_exec view -h -o t/data/output.sam t/data/output.cram`;
-`$samtools_exec view -h -o t/data/AddTags/expected_tradis.sam t/data/AddTags/expected_tradis.cram`;
+`$samtools_exec view --no-PG -o t/data/output.sam t/data/output.cram`;
+`$samtools_exec view --no-PG -o t/data/AddTags/expected_tradis.sam t/data/AddTags/expected_tradis.cram`;
 compare_ok(
     't/data/output.sam',
     't/data/AddTags/expected_tradis.sam',

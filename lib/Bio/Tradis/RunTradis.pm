@@ -89,6 +89,8 @@ has 'outfile' => (
 );
 has 'min_seed_len' => ( is => 'rw', isa => 'Maybe[Int]',   required => 0 );
 has 'smalt' => ( is => 'rw', isa => 'Bool', default => 0 );
+has 'minimap2' => ( is => 'rw', isa => 'Bool', default => 0 );
+has 'minimap2_long' => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'smalt_k' => ( is => 'rw', isa => 'Maybe[Int]',   required => 0 );
 has 'smalt_s' => ( is => 'rw', isa => 'Maybe[Int]',   required => 0 );
 has 'smalt_y' => ( is => 'rw', isa => 'Maybe[Num]', required => 0, default => 0.96 );
@@ -214,6 +216,7 @@ sub run_tradis {
     if (defined($self->tag)) {
         # Step 1: Filter tags that match user input tag
         print STDERR "..........Step 1: Filter tags that match user input tag\n" if($self->verbose);
+        print STDERR "..........tag: ", $self->tag, ,"\n" if($self->verbose);
         $self->_filter;
 
         print STDERR "..........Step 1.1: Check that at least one read started with the tag\n" if($self->verbose);
@@ -227,7 +230,15 @@ sub run_tradis {
     }
 
     # Step 3: Map file to reference
-    my $mapper = $self->smalt ? "smalt" : "bwa";
+
+    my $mapper = "Unknown";
+    if ($self->smalt) {
+        $mapper="smalt";
+    } elsif ($self->minimap2) {
+        $mapper="minimap2";
+    } else {
+        $mapper="bwa";
+    }
     print STDERR "..........Step 3: Map file to reference using $mapper\n" if($self->verbose);
     $self->_map;
 
@@ -336,7 +347,9 @@ sub _map {
         smalt_y   => $self->smalt_y,
         smalt_r   => $self->smalt_r,
         smalt_n   => $self->smalt_n,
-        smalt     => $self->smalt
+        smalt     => $self->smalt,
+        minimap2  => $self->minimap2,
+        minimap2_long => $self->minimap2_long
     );
     $mapping->index_ref;
     $mapping->do_mapping;

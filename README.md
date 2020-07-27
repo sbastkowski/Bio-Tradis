@@ -62,6 +62,10 @@ Bio-Tradis can be run in a Docker container. First install Docker, then install 
 
     docker pull sangerpathogens/bio-tradis
 
+Alternatively if you wish to build docker locally, first clone this repository and from within the source code directory type:
+
+    docker build -t sangerpathogens/bio-tradis:local .
+
 To use Bio-Tradis use a command like this (substituting in your directories), where your files are assumed to be stored in /home/ubuntu/data:
 
     docker run --rm -it -v /home/ubuntu/data:/data sangerpathogens/bio-tradis bacteria_tradis -h
