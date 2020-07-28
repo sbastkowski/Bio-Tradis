@@ -1,10 +1,10 @@
 # This container will install Bio-Tradis from master
 #
-FROM debian:bullseye-slim
+FROM debian:buster-slim
 
 # Install the dependancies
 
-RUN apt-get update -qq && apt-get install -y sudo make wget unzip zlib1g-dev cpanminus gcc bzip2 libncurses5-dev libncursesw5-dev libssl-dev libbz2-dev zlib1g-dev liblzma-dev r-base git curl
+RUN apt-get update -qq && apt-get install -y sudo make wget unzip zlib1g-dev cpanminus gcc bzip2 libncurses5-dev libncursesw5-dev libssl-dev libbz2-dev zlib1g-dev liblzma-dev r-base git curl locales
 RUN apt-get install -y bwa smalt libcurl4-openssl-dev tabix
 
 RUN wget https://github.com/samtools/samtools/releases/download/1.10/samtools-1.10.tar.bz2
