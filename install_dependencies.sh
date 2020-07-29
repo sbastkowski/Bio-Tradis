@@ -15,7 +15,7 @@ SMALT_DOWNLOAD_URL="http://downloads.sourceforge.net/project/smalt/smalt-${SMALT
 BWA_DOWNLOAD_URL="https://sourceforge.net/projects/bio-bwa/files/bwa-${BWA_VERSION}.tar.bz2/download"
 TABIX_DOWNLOAD_URL="https://github.com/samtools/tabix/archive/${TABIX_VERSION}.tar.gz"
 SAMTOOLS_DOWNLOAD_URL="https://github.com/samtools/samtools/releases/download/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2"
-MINIMAP2_DOWNLOAD_URL="https://github.com/lh3/minimap2/releases/download/v{MINIMAP2_VERSION}/minimap2-$(MINIMAP2_VERSION}_x64-linux.tar.bz2"
+MINIMAP2_DOWNLOAD_URL="https://github.com/lh3/minimap2/releases/download/v{MINIMAP2_VERSION}/minimap2-${MINIMAP2_VERSION}_x64-linux.tar.bz2"
 
 # Make an install location
 if [ ! -d 'build' ]; then
