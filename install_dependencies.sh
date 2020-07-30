@@ -8,14 +8,14 @@ start_dir=$(pwd)
 SMALT_VERSION="0.7.6"
 BWA_VERSION="0.7.17"
 TABIX_VERSION="master"
-SAMTOOLS_VERSION="1.3"
-MINIMAP2_VERSION="1.27"
+SAMTOOLS_VERSION="1.10"
+MINIMAP2_VERSION="2.17"
 
 SMALT_DOWNLOAD_URL="http://downloads.sourceforge.net/project/smalt/smalt-${SMALT_VERSION}-bin.tar.gz"
 BWA_DOWNLOAD_URL="https://sourceforge.net/projects/bio-bwa/files/bwa-${BWA_VERSION}.tar.bz2/download"
 TABIX_DOWNLOAD_URL="https://github.com/samtools/tabix/archive/${TABIX_VERSION}.tar.gz"
 SAMTOOLS_DOWNLOAD_URL="https://github.com/samtools/samtools/releases/download/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2"
-MINIMAP2_DOWNLOAD_URL="https://github.com/lh3/minimap2/releases/download/v{MINIMAP2_VERSION}/minimap2-${MINIMAP2_VERSION}_x64-linux.tar.bz2"
+MINIMAP2_DOWNLOAD_URL="https://github.com/lh3/minimap2/releases/download/v${MINIMAP2_VERSION}/minimap2-${MINIMAP2_VERSION}_x64-linux.tar.bz2"
 
 # Make an install location
 if [ ! -d 'build' ]; then
@@ -47,8 +47,9 @@ download $MINIMAP2_DOWNLOAD_URL "minimap2-${MINIMAP2_VERSION}.tbz"
 if [ "$TRAVIS" = 'true' ]; then
   echo "Using Travis's apt plugin"
 else
-  sudo apt-get update -q
-  sudo apt-get install -y -q zlib1g-dev libxml-libxml-perl libgd-gd2-perl bioperl 
+  sudo apt-get update -q || true
+  sudo apt-get install -y -q wget unzip zlib1g-dev cpanminus gcc bzip2 libncurses5-dev libncursesw5-dev libssl-dev libbz2-dev zlib1g-dev liblzma-dev r-base git curl locales
+  sudo apt-get install -y -q bwa smalt libcurl4-openssl-dev tabix
 fi
 
 # Build all the things
