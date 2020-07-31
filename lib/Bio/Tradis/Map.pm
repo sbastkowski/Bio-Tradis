@@ -93,7 +93,7 @@ sub index_ref {
         my $read_len = $self->_calculate_read_len();
         my ( $k, $s ) = $self->_calculate_index_parameters($read_len);
         $cmd = "smalt index -k $k -s $s $refname $ref > /dev/null 2>&1";
-    } elsif ($self->minimap2) {
+    } elsif ($self->minimap2||$self->minimap2) {
         $cmd = "minimap2 -d $refname $ref > /dev/null 2>&1";
     } else {
         $cmd = "bwa index $ref > /dev/null 2>&1";
@@ -157,11 +157,9 @@ sub do_mapping {
     if ($self->smalt) { 
         $align = "smalt map -n $n -x -r $r -y $y $refname $fqfile 1> $outfile 2> align.stderr";
     } elsif ($self->minimap2) {
-        if ($self->minimap2_long) {
-        $align = "minimap2 -o $outfile -N 1 -ax map-ont $ref $fqfile";
-        } else {
-        $align = "minimap2 -o $outfile -N 1 -ax sr $ref $fqfile";
-        }
+        $align = "minimap2 -c -o $outfile -N 1 -ax sr $ref $fqfile";
+    } elsif ($self->minimap2_long) {
+        $align = "minimap2 -c -o $outfile -N 1 -ax map-ont $ref $fqfile";
     }  else {
         my $read_len = $self->_calculate_read_len();
         my $k = ( defined $self->min_seed_len ) ? 
