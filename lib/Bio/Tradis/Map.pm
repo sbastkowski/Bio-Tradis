@@ -93,7 +93,7 @@ sub index_ref {
         my $read_len = $self->_calculate_read_len();
         my ( $k, $s ) = $self->_calculate_index_parameters($read_len);
         $cmd = "smalt index -k $k -s $s $refname $ref > /dev/null 2>&1";
-    } elsif ($self->minimap2||$self->minimap2) {
+    } elsif ($self->minimap2||$self->minimap2_long) {
         $cmd = "minimap2 -d $refname $ref > /dev/null 2>&1";
     } else {
         $cmd = "bwa index $ref > /dev/null 2>&1";
